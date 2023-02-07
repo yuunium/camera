@@ -57,10 +57,10 @@ window.onload = () => {
   });
   
   function downloadCanvas() {
-	let canvas = document.getElementById("canvas");
+	let canvas = document.getElementById("picture");
 	let link = document.createElement("a");
 	link.href = canvas.toDataURL();
-	link.download = "canvas-002.png";
+	link.download = "canvas.png";
 	link.click();
 }
   
