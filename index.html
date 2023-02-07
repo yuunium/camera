@@ -53,7 +53,8 @@ window.onload = () => {
     const ctx = canvas.getContext("2d");
 
     // canvasに画像を貼り付ける
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
+    alert("hello")
   });
   
   function downloadCanvas() {
@@ -62,6 +63,7 @@ window.onload = () => {
 	link.href = canvas.toDataURL();
 	link.download = "canvas.png";
 	link.click();
+	alert("ok")
 }
   
 };
