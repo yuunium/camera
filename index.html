@@ -10,37 +10,51 @@
 </head>
 <body>
 
-  </head>
-<body>
-  <canvas id="canvas" width="500" height="300" style="border: solid 1px #000;box-sizing: border-box;"></canvas>
-  
-  <input type="button" value="clear" id="clear">
-  <a id="download" href="#" download="canvas.jpg">ダウンロード</a>
-  <div id="result"><img src=""></div>
- 
-  <script>
-    // canvas
-    var cnvs = document.getElementById('canvas');
-    var ctx = cnvs.getContext('2d');
- 
-  
-    // canvasの背景色を設定(指定がない場合にjpeg保存すると背景が黒になる)
-    setBgColor();
-    
-   // canvasを画像で保存
-    $("#download").click(function(){
-      canvas = document.getElementById('canvas');
-      var base64 = canvas.toDataURL("image/jpeg");
-      document.getElementById("download").href = base64;
-    });
- 
-    function setBgColor(){
-      // canvasの背景色を設定(指定がない場合にjpeg保存すると背景が黒になる)
-      ctx.fillStyle = bgColor;
-      ctx.fillRect(0,0,cnvWidth,cnvHeight);
-    }
-  </script>
-  
   <hr>
+  <video id="camera" width="480" height="270"></video>
+<canvas id="picture" width="1920" height="1080" style="width:480px; height:270px;"></canvas>
+<form>
+  <button type="button" id="shutter">シャッター</button>
+  </form>
+  <button onclick="downloadCanvas()" id="download" href="#" download="canvas.jpg">download</button>
   
+<script>
+window.onload = () => {
+  const video  = document.querySelector("#camera");
+  const canvas = document.querySelector("#picture");
+  
+  /** カメラ設定 */
+  const constraints = {
+    audio: false,
+    video: {
+      width: 1920,
+      height: 1080,
+      facingMode: { exact: "environment" }  // リアカメラを利用する場合
+    }
+  };
+
+  /**カメラを<video>と同期*/
+  navigator.mediaDevices.getUserMedia(constraints)
+  .then( (stream) => {
+    video.srcObject = stream;
+    video.onloadedmetadata = (e) => {
+      video.play();
+    };
+  })
+  .catch( (err) => {
+    console.log(err.name + ": " + err.message);
+  });
+
+  /**シャッターボタン*/
+   document.querySelector("#shutter").addEventListener("click", () => {
+    const ctx = canvas.getContext("2d");
+
+    // canvasに画像を貼り付ける
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+  });
+  
+};
+  
+</script>
+
 </body>
