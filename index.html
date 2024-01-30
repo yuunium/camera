@@ -26,10 +26,12 @@ window.onload = () => {
   const canvas = document.querySelector("#picture");
 
   function downloadCanvas() {
+    alert("s")
     var canvas = document.getElementById("picture") ;
     var dataURI = canvas.toDataURL( "image/jpeg", 0.75 ) ;
     var image = document.getElementById( "output" ) ;
     image.src = dataURI ;
+    alert("f")
   }
   
   /** カメラ設定 */
