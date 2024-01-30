@@ -12,16 +12,25 @@
 
   <hr>
   <video id="camera" width="480" height="270"></video>
-<canvas id="picture" width="1920" height="1080" style="width:480px; height:270px;"></canvas>
+  <canvas id="picture" width="1920" height="1080" style="width:480px; height:270px;"></canvas>
 <form>
   <button type="button" id="shutter">シャッター</button>
   </form>
   <button onclick="downloadCanvas()" id="download" href="#" download="canvas.jpg">download</button>
   
+  <img id="output" src="">
+
 <script>
 window.onload = () => {
   const video  = document.querySelector("#camera");
   const canvas = document.querySelector("#picture");
+
+  function downloadCanvas() {
+    var canvas = document.getElementById("picture") ;
+    var dataURI = canvas.toDataURL( "image/jpeg", 0.75 ) ;
+    var image = document.getElementById( "output" ) ;
+    image.src = dataURI ;
+  }
   
   /** カメラ設定 */
   const constraints = {
