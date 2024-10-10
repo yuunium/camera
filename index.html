@@ -1,69 +1,57 @@
-
+<!DOCTYPE html>
+<html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>Camera Test</title>
-  <style>
-  canvas, video{
-    border: 1px solid gray;
-  }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>リアカメラ映像のキャプチャと保存</title>
 </head>
 <body>
-
-  <hr>
-  <video id="camera" width="480" height="270"></video>
-  <canvas id="picture" width="1920" height="1080" style="width:480px; height:270px;"></canvas>
-<form>
-  <button type="button" id="shutter">シャッター</button>
-  </form>
-  <button onclick="downloadCanvas()" id="download" href="#" download="canvas.jpg">download</button>
+  <h1>リアカメラ映像のキャプチャと保存</h1>
   
-  <img id="output" src="">
+  <video id="video" autoplay playsinline></video>
+  <br>
+  <button id="capture">画像をキャプチャ</button>
+  <br>
+  <a id="downloadLink" style="display:none;" download="capture.png">画像をダウンロード</a>
 
-<script>
-window.onload = () => {
-  const video  = document.querySelector("#camera");
-  const canvas = document.querySelector("#picture");
+  <canvas id="canvas" style="display:none;"></canvas>
 
-  function downloadCanvas() {
-    var canvas = document.getElementById("picture") ;
-    var dataURI = canvas.toDataURL( "image/jpeg", 0.75 ) ;
-    var image = document.getElementById( "output" ) ;
-    image.src = dataURI ;
-  }
-  
-  /** カメラ設定 */
-  const constraints = {
-    audio: false,
-    video: {
-      width: 1920,
-      height: 1080,
-      facingMode: { exact: "environment" }  // リアカメラを利用する場合
-    }
-  };
+  <script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const captureButton = document.getElementById('capture');
+    const downloadLink = document.getElementById('downloadLink');
 
-  /**カメラを<video>と同期*/
-  navigator.mediaDevices.getUserMedia(constraints)
-  .then( (stream) => {
-    video.srcObject = stream;
-    video.onloadedmetadata = (e) => {
-      video.play();
-    };
-  })
-  .catch( (err) => {
-    console.log(err.name + ": " + err.message);
-  });
+    // リアカメラの映像を取得
+    navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: { ideal: 'environment' } // リアカメラを使用
+      }
+    }).then(stream => {
+      video.srcObject = stream;
+    }).catch(error => {
+      console.error('カメラアクセスエラー:', error);
+    });
 
-  /**シャッターボタン*/
-   document.querySelector("#shutter").addEventListener("click", () => {
-    const ctx = canvas.getContext("2d");
+    // キャプチャボタンを押したときの処理
+    captureButton.addEventListener('click', () => {
+      const context = canvas.getContext('2d');
+      
+      // canvasのサイズをvideoのサイズに合わせる
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
 
-    // canvasに画像を貼り付ける
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-  });
-  
-};
-  
-</script>
+      // videoの現在のフレームをcanvasに描画
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
+      // canvasから画像データを取得
+      const dataURL = canvas.toDataURL('image/png');
+
+      // ダウンロードリンクのhrefを設定し、表示
+      downloadLink.href = dataURL;
+      downloadLink.style.display = 'inline';
+      downloadLink.textContent = '画像をダウンロード';
+    });
+  </script>
 </body>
+</html>
